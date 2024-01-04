@@ -31,6 +31,15 @@ class Board {
     return this._items;
   }
 
+  private clone() {
+    let board = new Board();
+    for (let y = 0; y < BOARD_COL_SIZE; y++) {
+      for (let x = 0; x < BOARD_ROW_SIZE; x++) {
+        board._items[y][x] = this._items[y][x];
+      }
+    }
+  }
+
   private boardValue1X() {
     const items = this._items.flat();
     const idx = items.findIndex(e => e === MARKER_CHAR);
@@ -141,8 +150,12 @@ class Board {
     if (
       (idx1 === 0 && idx2 === 1 && idx3 === 4) ||
       (idx1 === 1 && idx2 === 2 && idx3 === 4) ||
+      (idx1 === 0 && idx2 === 3 && idx3 === 4) ||
+      (idx1 === 3 && idx2 === 4 && idx3 === 6) ||
       (idx1 === 4 && idx2 === 6 && idx3 === 7) ||
-      (idx1 === 4 && idx2 === 7 && idx3 === 8)
+      (idx1 === 4 && idx2 === 7 && idx3 === 8) ||
+      (idx1 === 4 && idx2 === 5 && idx3 === 8) ||
+      (idx1 === 2 && idx2 === 4 && idx3 === 5)
     ) {
       return MisereQuotient.a * MisereQuotient.b;
     }
@@ -266,20 +279,150 @@ class Board {
     const idx3 = items.findIndex((e, i) => e === MARKER_CHAR && i > idx2);
     const idx4 = items.findIndex((e, i) => e === MARKER_CHAR && i > idx3);
     // all 4 in one corner -> a
-    // 3 in a corner and opposite side -> a
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 3 && idx4 === 4) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 4 && idx4 === 5) ||
+      (idx1 === 3 && idx2 === 4 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 4 && idx2 === 5 && idx3 === 7 && idx4 === 8)
+    ) {
+      return MisereQuotient.a;
+    }
+    // 3 sides 1 corner -> a
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 3 && idx4 === 5) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 5) ||
+      (idx1 === 0 && idx2 === 1 && idx3 === 3 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 3 && idx2 === 5 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 3 && idx2 === 5 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 5 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 5 && idx3 === 7 && idx4 === 8)
+    ) {
+      return MisereQuotient.a;
+    }
     // 3 in a corner and opposite corner -> a
-    // corner, center and other two sides -> b
-    // two adjacent corner, center and a side -> b
-    // 2 sides and 2 corders with one adjacent corner and both corner on same side -> b
-    // 2 sides and a corner -> ab
-    // 4 sides -> ab
-    // 2 sides 2 corners both adjacent -> ab
-    // 3 corners 1 side -> b
-    // 2 corners 2 sides, both adjacent but corners are opposite -> a
-    // center, side, opposite 2 corners -> a
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 3 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 5 && idx4 === 6) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 5 && idx3 === 7 && idx4 === 8)
+    ) {
+      return MisereQuotient.a;
+    }
+    // corner, center and adjacent two sides -> b
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 4 && idx4 === 5) ||
+      (idx1 === 4 && idx2 === 5 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 4 && idx4 === 6) ||
+      (idx1 === 1 && idx2 === 4 && idx3 === 5 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 4) ||
+      (idx1 === 3 && idx2 === 4 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 3 && idx3 === 4 && idx4 === 7) ||
+      (idx1 === 2 && idx2 === 4 && idx3 === 5 && idx4 === 7)
+    ) {
+      return MisereQuotient.b;
+    }
+    // adjacent corners, center and adjacent side -> b
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 4 && idx4 === 6) ||
+      (idx1 === 0 && idx2 === 4 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 4 && idx4 === 8) ||
+      (idx1 === 2 && idx2 === 4 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 3 && idx2 === 4 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 4 && idx2 === 5 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 3 && idx4 === 4) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 4 && idx4 === 5)
+    ) {
+      return MisereQuotient.b;
+    }
+    // 2 adjacent corner, oppositeside and adjacent side -> b
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 5 && idx4 === 6) ||
+      (idx1 === 0 && idx2 === 5 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 5 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 3 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 5 && idx4 === 7)
+    ) {
+      return MisereQuotient.b;
+    }
+    // 2 adjacent in a corner and other 2 sides -> ab
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 5 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 5 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 5 && idx4 === 6) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 5 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 3 && idx3 === 5 && idx4 === 7) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 5 && idx4 === 7)
+    ) {
+      return MisereQuotient.a * MisereQuotient.b;
+    }
+    // 2 adjacent in a corner, 2 adjacent in a vertical corner -> ab
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 5 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 6) ||
+      (idx1 === 2 && idx2 === 5 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 3 && idx3 === 7 && idx4 === 8)
+    ) {
+      return MisereQuotient.a * MisereQuotient.b;
+    }
+    // corner side adjacent pair, corners are adjacent -> b
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 3 && idx2 === 5 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 3 && idx4 === 6)
+    ) {
+      return MisereQuotient.b;
+    }
+    // 3 corners and one adjacent side -> b
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 5 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 5 && idx4 === 6) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 3 && idx4 === 8) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 6 && idx4 === 8)
+    ) {
+      return MisereQuotient.b;
+    }
+    // 2 adjacent in opposite corners -> a
+    if (
+      (idx1 === 0 && idx2 === 1 && idx3 === 7 && idx4 === 8) ||
+      (idx1 === 1 && idx2 === 2 && idx3 === 6 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 3 && idx3 === 5 && idx4 === 8) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 5 && idx4 === 6)
+    ) {
+      return MisereQuotient.a;
+    }
+    // center, side, opposite 2 corners -> b
+    if (
+      (idx1 === 1 && idx2 === 4 && idx3 === 6 && idx4 === 8) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 4 && idx4 === 8) ||
+      (idx1 === 0 && idx2 === 2 && idx3 === 4 && idx4 === 7) ||
+      (idx1 === 0 && idx2 === 4 && idx3 === 5 && idx4 === 6)
+    ) {
+      return MisereQuotient.b;
+    }
     // 4 corners -> a
+    if (idx1 === 0 && idx2 === 2 && idx3 === 6 && idx4 === 8) {
+      return MisereQuotient.a;
+    }
     // center 2 sides opposite corner -> b
-
+    if (
+      (idx1 === 0 && idx2 === 4 && idx3 === 5 && idx4 === 7) ||
+      (idx1 === 1 && idx2 === 4 && idx3 === 5 && idx4 === 6) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 4 && idx4 === 8) ||
+      (idx1 === 2 && idx2 === 3 && idx3 === 4 && idx4 === 7)
+    ) {
+      return MisereQuotient.b;
+    }
     // 4 sides -> a
     if (idx1 === 1 && idx2 === 3 && idx3 === 5 && idx4 === 7) {
       return MisereQuotient.a;
@@ -334,7 +477,7 @@ class Board {
     if (
       (idx1 === 0 && idx2 === 1 && idx3 === 5 && idx4 === 6 && idx5 === 7) ||
       (idx1 === 1 && idx2 === 2 && idx3 === 3 && idx4 === 7 && idx5 === 8) ||
-      (idx1 === 1 && idx2 === 3 && idx3 === 5 && idx4 === 6 && idx5 === 7) ||
+      (idx1 === 1 && idx2 === 3 && idx3 === 5 && idx4 === 6 && idx5 === 8) ||
       (idx1 === 0 && idx2 === 2 && idx3 === 3 && idx4 === 5 && idx5 === 7)
     ) {
       return MisereQuotient.a;
@@ -384,7 +527,8 @@ class Board {
     if (this.isDead()) {
       return MisereQuotient.one;
     }
-    const countX = this._items.flat().filter(e => e === MARKER_CHAR).length;
+    const list = this._items.flat();
+    const countX = list.filter(e => e === MARKER_CHAR).length;
     // empty board
     if (countX === 0) {
       return MisereQuotient.c;
@@ -423,6 +567,9 @@ class Board {
     }
     if (y < 0 || y >= BOARD_COL_SIZE) {
       throw new Error('Invalid y position value: ' + y);
+    }
+    if (this.isDead()) {
+      throw new Error('Dead board');
     }
     this._items[y][x] = MARKER_CHAR;
   }
