@@ -1,10 +1,11 @@
-import Board, {
+import Board from './board';
+import {BOARD_CONFIG_TEST_DATA, DEAD_BOARD_TEST_DATA} from './boardTestData';
+import {
   BOARD_COL_SIZE,
   BOARD_ROW_SIZE,
   MARKER_CHAR,
   MisereQuotient,
-} from './board';
-import {BOARD_CONFIG_TEST_DATA, DEAD_BOARD_TEST_DATA} from './boardTestData';
+} from './boardValueMaping';
 
 function xPosition(idx: number): number {
   return idx % BOARD_ROW_SIZE;

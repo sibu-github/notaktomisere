@@ -1,4 +1,4 @@
-import {MisereQuotient} from './board';
+import {MisereQuotient} from './boardValueMaping';
 
 type BoardConfigWithValue = {
   config: string[][];
