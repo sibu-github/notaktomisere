@@ -1,23 +1,27 @@
+import {findInValueMapping} from './boardValueMaping';
 import {
   BOARD_COL_SIZE,
   BOARD_ROW_SIZE,
   MARKER_CHAR,
   MisereQuotient,
-  findInValueMapping,
-} from './boardValueMaping';
+} from './definitions';
 
 class Board {
+  colSize: number;
+  rowSize: number;
   private _items: string[][];
 
   constructor() {
+    this.colSize = BOARD_COL_SIZE;
+    this.rowSize = BOARD_ROW_SIZE;
     this._items = this.emptyArray();
   }
 
   private emptyArray() {
-    return Array(BOARD_COL_SIZE)
+    return Array(this.colSize)
       .fill('')
       .map(() =>
-        Array(BOARD_ROW_SIZE)
+        Array(this.rowSize)
           .fill('')
           .map(() => ''),
       );
@@ -27,13 +31,14 @@ class Board {
     return this._items;
   }
 
-  private clone() {
-    let board = new Board();
-    for (let y = 0; y < BOARD_COL_SIZE; y++) {
-      for (let x = 0; x < BOARD_ROW_SIZE; x++) {
+  public clone() {
+    const board = new Board();
+    for (let y = 0; y < this.colSize; y++) {
+      for (let x = 0; x < this.rowSize; x++) {
         board._items[y][x] = this._items[y][x];
       }
     }
+    return board;
   }
 
   public boardValue(): number {
@@ -48,16 +53,30 @@ class Board {
   }
 
   public markAtPos(x: number, y: number): void {
-    if (x < 0 || x >= BOARD_ROW_SIZE) {
+    if (x < 0 || x >= this.rowSize) {
       throw new Error('Invalid x position value: ' + x);
     }
-    if (y < 0 || y >= BOARD_COL_SIZE) {
+    if (y < 0 || y >= this.colSize) {
       throw new Error('Invalid y position value: ' + y);
     }
     if (this.isDead()) {
       throw new Error('Dead board');
     }
     this._items[y][x] = MARKER_CHAR;
+  }
+
+  public clearAtPos(x: number, y: number) {
+    if (x < 0 || x >= this.rowSize) {
+      throw new Error('Invalid x position value: ' + x);
+    }
+    if (y < 0 || y >= this.colSize) {
+      throw new Error('Invalid y position value: ' + y);
+    }
+    this._items[y][x] = '';
+  }
+
+  public isMovePossible(x: number, y: number) {
+    return !this.isDead() && this._items[y][x] !== MARKER_CHAR;
   }
 
   public clear(): void {

@@ -1,17 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704302911655" clover="3.2.0">
-  <project timestamp="1704302911655" name="All files">
-    <metrics statements="8" coveredstatements="8" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2" elements="20" coveredelements="15" complexity="0" loc="8" ncloc="8" packages="1" files="1" classes="1"/>
-    <file name="App.tsx" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/App.tsx">
+<coverage generated="1704463181230" clover="3.2.0">
+  <project timestamp="1704463181231" name="All files">
+    <metrics statements="105" coveredstatements="93" conditionals="42" coveredconditionals="26" methods="30" coveredmethods="27" elements="177" coveredelements="146" complexity="0" loc="105" ncloc="105" packages="2" files="5" classes="5"/>
+    <package name="NotaktoMisere">
       <metrics statements="8" coveredstatements="8" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2"/>
-      <line num="34" count="1" type="stmt"/>
-      <line num="35" count="4" type="stmt"/>
-      <line num="36" count="4" type="stmt"/>
-      <line num="60" count="1" type="stmt"/>
-      <line num="61" count="1" type="stmt"/>
-      <line num="63" count="1" type="stmt"/>
-      <line num="67" count="1" type="stmt"/>
-      <line num="101" count="1" type="stmt"/>
-    </file>
+      <file name="App.tsx" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/App.tsx">
+        <metrics statements="8" coveredstatements="8" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="4" type="stmt"/>
+        <line num="36" count="4" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="101" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="NotaktoMisere.lib.game">
+      <metrics statements="97" coveredstatements="85" conditionals="32" coveredconditionals="21" methods="28" coveredmethods="25"/>
+      <file name="board.ts" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/lib/game/board.ts">
+        <metrics statements="35" coveredstatements="24" conditionals="24" coveredconditionals="14" methods="15" coveredmethods="12"/>
+        <line num="15" count="10" type="stmt"/>
+        <line num="16" count="10" type="stmt"/>
+        <line num="17" count="10" type="stmt"/>
+        <line num="21" count="485" type="stmt"/>
+        <line num="24" count="1455" type="stmt"/>
+        <line num="26" count="4365" type="stmt"/>
+        <line num="31" count="464" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="45" count="925" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="470" type="stmt"/>
+        <line num="49" count="4095" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="52" count="454" type="stmt"/>
+        <line num="56" count="833" type="cond" truecount="4" falsecount="0"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="59" count="831" type="cond" truecount="4" falsecount="0"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="62" count="829" type="cond" truecount="2" falsecount="0"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="65" count="828" type="stmt"/>
+        <line num="69" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="72" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="79" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="83" count="475" type="stmt"/>
+        <line num="87" count="3964" type="stmt"/>
+        <line num="88" count="3964" type="stmt"/>
+        <line num="98" count="3964" type="stmt"/>
+        <line num="99" count="28219" type="stmt"/>
+      </file>
+      <file name="boardTestData.ts" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/lib/game/boardTestData.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="1779" count="1" type="stmt"/>
+      </file>
+      <file name="boardValueMaping.ts" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/lib/game/boardValueMaping.ts">
+        <metrics statements="56" coveredstatements="55" conditionals="8" coveredconditionals="7" methods="13" coveredmethods="13"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="112" type="cond" truecount="3" falsecount="1"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="7" count="112" type="stmt"/>
+        <line num="8" count="112" type="stmt"/>
+        <line num="9" count="17" type="stmt"/>
+        <line num="11" count="112" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="16" type="stmt"/>
+        <line num="16" count="16" type="stmt"/>
+        <line num="17" count="16" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="16" type="stmt"/>
+        <line num="21" count="16" type="stmt"/>
+        <line num="22" count="16" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="25" count="16" type="stmt"/>
+        <line num="26" count="16" type="stmt"/>
+        <line num="27" count="16" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="30" count="16" type="stmt"/>
+        <line num="31" count="16" type="stmt"/>
+        <line num="32" count="16" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="16" type="stmt"/>
+        <line num="36" count="16" type="stmt"/>
+        <line num="37" count="16" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="40" count="16" type="stmt"/>
+        <line num="41" count="16" type="stmt"/>
+        <line num="42" count="16" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="16" type="stmt"/>
+        <line num="46" count="16" type="stmt"/>
+        <line num="47" count="16" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="61" count="8" type="stmt"/>
+        <line num="62" count="8" type="stmt"/>
+        <line num="63" count="112" type="stmt"/>
+        <line num="64" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="65" count="8" type="stmt"/>
+        <line num="67" count="8" type="stmt"/>
+        <line num="70" count="8" type="stmt"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="95" count="1" type="stmt"/>
+        <line num="169" count="1" type="stmt"/>
+        <line num="303" count="1" type="stmt"/>
+        <line num="455" count="1" type="stmt"/>
+        <line num="511" count="1" type="stmt"/>
+        <line num="521" count="1" type="stmt"/>
+        <line num="531" count="455" type="stmt"/>
+        <line num="532" count="455" type="stmt"/>
+        <line num="533" count="73718" type="cond" truecount="2" falsecount="0"/>
+        <line num="534" count="454" type="stmt"/>
+        <line num="537" count="1" type="stmt"/>
+      </file>
+      <file name="definitions.ts" path="/Volumes/ExtremeSSD/projects/Personal_projects/NotaktoMisere/lib/game/definitions.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>

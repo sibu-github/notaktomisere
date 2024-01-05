@@ -1,11 +1,12 @@
 import Board from './board';
 import {BOARD_CONFIG_TEST_DATA, DEAD_BOARD_TEST_DATA} from './boardTestData';
+import {applyTransformations, findInValueMapping} from './boardValueMaping';
 import {
   BOARD_COL_SIZE,
   BOARD_ROW_SIZE,
   MARKER_CHAR,
   MisereQuotient,
-} from './boardValueMaping';
+} from './definitions';
 
 function xPosition(idx: number): number {
   return idx % BOARD_ROW_SIZE;
@@ -88,6 +89,18 @@ describe('Board', () => {
     expect(() => board.markAtPos(3, 1)).toThrow('Invalid x');
   });
 
+  test('cleatAtPos works', async () => {
+    let board = new Board();
+    board.markAtPos(0, 0);
+    expect(board.items.flat()[0]).toBe(MARKER_CHAR);
+    board.clearAtPos(0, 0);
+    expect(board.items.flat()[0]).toBe('');
+    expect(() => board.clearAtPos(-1, 0)).toThrow('Invalid x');
+    expect(() => board.clearAtPos(0, -1)).toThrow('Invalid y');
+    expect(() => board.clearAtPos(0, 3)).toThrow('Invalid y');
+    expect(() => board.clearAtPos(3, 1)).toThrow('Invalid x');
+  });
+
   test('empty board', async () => {
     let board = new Board();
     expect(board.boardValue()).toBe(MisereQuotient.c);
@@ -153,5 +166,46 @@ describe('Board', () => {
         expect(board.boardValue()).toBeGreaterThan(0);
       });
     });
+  });
+
+  test('clone board', async () => {
+    const board1 = new Board();
+    board1.markAtPos(0, 0);
+    board1.markAtPos(0, 2);
+    board1.markAtPos(2, 2);
+    const board2 = board1.clone();
+    expect(board1.boardValue()).toBe(board2.boardValue());
+    board2.markAtPos(0, 1);
+    expect(board1.boardValue()).not.toBe(board2.boardValue());
+  });
+
+  test('findInValueMapping throws', async () => {
+    expect(() => findInValueMapping(new Board().items)).toThrow();
+  });
+
+  test('applyTransformations', async () => {
+    const d2 = MisereQuotient.d * MisereQuotient.d;
+    const c2 = MisereQuotient.c * MisereQuotient.c;
+    const cd = MisereQuotient.c * MisereQuotient.d;
+    const ad = MisereQuotient.a * MisereQuotient.d;
+    const b2d = MisereQuotient.b * MisereQuotient.b * MisereQuotient.d;
+    const d = MisereQuotient.d;
+    const c3 = MisereQuotient.c * MisereQuotient.c * MisereQuotient.c;
+    const ac2 = MisereQuotient.a * MisereQuotient.c * MisereQuotient.c;
+    const b2c = MisereQuotient.b * MisereQuotient.b * MisereQuotient.c;
+    const c = MisereQuotient.c;
+    const b3 = MisereQuotient.b * MisereQuotient.b * MisereQuotient.b;
+    const b = MisereQuotient.b;
+    const a2 = MisereQuotient.a * MisereQuotient.a;
+    const one = MisereQuotient.one;
+
+    expect(applyTransformations(d2)).toBe(c2);
+    expect(applyTransformations(cd)).toBe(ad);
+    expect(applyTransformations(b2d)).toBe(d);
+    expect(applyTransformations(c3)).toBe(ac2);
+    expect(applyTransformations(b2c)).toBe(c);
+    expect(applyTransformations(b3)).toBe(b);
+    expect(applyTransformations(a2)).toBe(one);
+    expect(applyTransformations(d2 * d2 * b2c * b2c)).toBe(c2);
   });
 });

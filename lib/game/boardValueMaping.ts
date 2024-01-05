@@ -1,19 +1,81 @@
-export const BOARD_ROW_SIZE = 3;
-export const BOARD_COL_SIZE = 3;
-export const MARKER_CHAR = 'X';
+import {MARKER_CHAR, MisereQuotient, ValueMapping} from './definitions';
 
-export enum MisereQuotient {
-  'one' = 1,
-  'a' = 2,
-  'b' = 3,
-  'c' = 5,
-  'd' = 7,
+const stepDownTransform = (val: number, div: number, mul: number): number => {
+  if (div === 0 || div === 1) {
+    return val;
+  }
+  let num = val;
+  while (num % div === 0) {
+    num = (num / div) * mul;
+  }
+  return num;
+};
+
+const transformd2Eqc2 = (val: number): number => {
+  const d2 = MisereQuotient.d * MisereQuotient.d;
+  const c2 = MisereQuotient.c * MisereQuotient.c;
+  return stepDownTransform(val, d2, c2);
+};
+const transformcdEqad = (val: number): number => {
+  const cd = MisereQuotient.c * MisereQuotient.d;
+  const ad = MisereQuotient.a * MisereQuotient.d;
+  return stepDownTransform(val, cd, ad);
+};
+const transformb2dEqd = (val: number): number => {
+  const b2d = MisereQuotient.b * MisereQuotient.b * MisereQuotient.d;
+  const d = MisereQuotient.d;
+  return stepDownTransform(val, b2d, d);
+};
+const transformc3Eqac2 = (val: number): number => {
+  const c3 = MisereQuotient.c * MisereQuotient.c * MisereQuotient.c;
+  const ac2 = MisereQuotient.a * MisereQuotient.c * MisereQuotient.c;
+  return stepDownTransform(val, c3, ac2);
+};
+const transformb2cEqc = (val: number): number => {
+  const b2c = MisereQuotient.b * MisereQuotient.b * MisereQuotient.c;
+  const c = MisereQuotient.c;
+  return stepDownTransform(val, b2c, c);
+};
+const transformb3Eqb = (val: number): number => {
+  const b3 = MisereQuotient.b * MisereQuotient.b * MisereQuotient.b;
+  const b = MisereQuotient.b;
+  return stepDownTransform(val, b3, b);
+};
+const transforma2Eqone = (val: number): number => {
+  const a2 = MisereQuotient.a * MisereQuotient.a;
+  const one = MisereQuotient.one;
+  return stepDownTransform(val, a2, one);
+};
+
+const transformations = [
+  transformd2Eqc2,
+  transformcdEqad,
+  transformb2dEqd,
+  transformc3Eqac2,
+  transformb2cEqc,
+  transformb3Eqb,
+  transforma2Eqone,
+];
+
+export function applyTransformations(num: number): number {
+  let val = num;
+  while (true) {
+    let transformed = transformations.reduce((n, f) => f(n), val);
+    if (val === transformed) {
+      break;
+    } else {
+      val = transformed;
+    }
+  }
+  return val;
 }
 
-export type ValueMapping = {
-  indexes: number[][];
-  value: MisereQuotient;
-};
+export const P_POSITIONS = [
+  MisereQuotient.a,
+  MisereQuotient.b * MisereQuotient.b,
+  MisereQuotient.b * MisereQuotient.c,
+  MisereQuotient.c * MisereQuotient.c,
+];
 
 const valueMapping1X: ValueMapping[] = [
   {
