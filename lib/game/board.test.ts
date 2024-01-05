@@ -15,6 +15,33 @@ function yPosition(idx: number): number {
   return Math.floor(idx / BOARD_COL_SIZE);
 }
 
+function getPossiblePositions(count: number) {
+  const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  const subsets: number[][] = [];
+  if (count < 1 || count > positions.length) {
+    return subsets;
+  }
+  const smallerSet = positions.map((v, idx) => ({e: [v], i: idx}));
+  while (smallerSet.length > 0) {
+    const elem = smallerSet.pop();
+    if (!elem) {
+      continue;
+    }
+    if (elem.e.length === count) {
+      subsets.push(elem.e);
+      continue;
+    }
+    let i = elem.i + 1;
+    while (i < positions.length) {
+      const e = [...elem.e, positions[i]];
+      smallerSet.push({e, i});
+      i += 1;
+    }
+  }
+
+  return subsets;
+}
+
 function markBoardWithConfig(board: Board, config: string[][]) {
   board.clear();
   if (
@@ -109,5 +136,22 @@ describe('Board', () => {
     const board = new Board();
     markBoardWithConfig(board, DEAD_BOARD_TEST_DATA[0].config);
     expect(() => board.markAtPos(2, 2)).toThrow('Dead board');
+  });
+
+  test('test board value for all possible positions', async () => {
+    const board = new Board();
+    const marKBoard = (pos: number) => {
+      if (!board.isDead()) {
+        board.markAtPos(xPosition(pos), yPosition(pos));
+      }
+    };
+    [1, 2, 3, 4, 5, 6].forEach(count => {
+      const positions = getPossiblePositions(count);
+      board.clear();
+      positions.forEach(p => {
+        p.forEach(marKBoard);
+        expect(board.boardValue()).toBeGreaterThan(0);
+      });
+    });
   });
 });
