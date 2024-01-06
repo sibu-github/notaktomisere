@@ -28,6 +28,6 @@ export type BoardMove = {
 };
 
 export enum CurrentPlayer {
-  One,
-  Two,
+  One = 1,
+  Two = 2,
 }

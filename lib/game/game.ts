@@ -1,131 +1,75 @@
 import Board from './board';
 import {P_POSITIONS, applyTransformations} from './boardValueMaping';
 import {
+  BOARD_COL_SIZE,
+  BOARD_ROW_SIZE,
   BoardMove,
-  CurrentPlayer,
   NO_OF_BOARDS,
-  PlayerType,
 } from './definitions';
 import {randomNumber} from './helper';
 
-class Game {
-  numberOfBoards: number;
-  player1Type: PlayerType | undefined;
-  player2Type: PlayerType | undefined;
-  player1Moves: BoardMove[];
-  player2Moves: BoardMove[];
-  currentPlayer: CurrentPlayer;
-  winner: CurrentPlayer | undefined;
-  isFinished: boolean;
-  boards: Board[];
-
-  constructor(numberOfBoards = NO_OF_BOARDS) {
-    this.numberOfBoards = numberOfBoards;
-    this.player1Moves = [];
-    this.player2Moves = [];
-    this.currentPlayer = CurrentPlayer.One;
-    this.isFinished = false;
-    this.boards = Array(this.numberOfBoards)
-      .fill(0)
-      .map(() => new Board());
-  }
-
-  public setPlayerTypes(player1Type: PlayerType, player2Type: PlayerType) {
-    this.player1Type = player1Type;
-    this.player2Type = player2Type;
-  }
-
-  public getBoardItems(boardIndex: number) {
-    return this.boards[boardIndex].items;
-  }
-
-  public isDeadBoard(boardIndex: number) {
-    return this.boards[boardIndex].isDead();
-  }
-
-  private getNextPlayer() {
-    return this.currentPlayer === CurrentPlayer.One
-      ? CurrentPlayer.Two
-      : CurrentPlayer.One;
-  }
-
-  private calculateWinner() {
-    if (this.boards.every(board => board.isDead())) {
-      this.isFinished = true;
-      this.winner = this.getNextPlayer();
-    }
-  }
-
-  public makeMove(move: BoardMove) {
-    if (!this.player1Type || !this.player2Type) {
-      return;
-    }
-    const {boardIndex, x, y} = move;
-    if (this.currentPlayer === CurrentPlayer.One) {
-      this.player1Moves.push(move);
-    } else {
-      this.player2Moves.push(move);
-    }
-    this.boards[boardIndex].markAtPos(x, y);
-    this.calculateWinner();
-    this.currentPlayer = this.getNextPlayer();
-  }
-
-  private totalBoardValue(boards: Board[]) {
-    const val = boards.reduce((v, board) => v * board.boardValue(), 1);
-    return applyTransformations(val);
-  }
-
-  private boardSize() {
-    return this.boards[0].colSize * this.boards[0].rowSize;
-  }
-
-  private boardIndexFromPosition(pos: number): number {
-    return Math.floor(pos / this.boardSize());
-  }
-
-  private xFromPosition(pos: number): number {
-    return pos % this.boards[0].rowSize;
-  }
-
-  private yFromPosition(pos: number): number {
-    return Math.floor(pos / this.boards[0].colSize) % this.boards[0].colSize;
-  }
-
-  private cloneBoards() {
-    return this.boards.map(board => board.clone());
-  }
-
-  public findNextMove(): BoardMove {
-    if (this.isFinished) {
-      throw new Error('Game is finished already');
-    }
-    const boards = this.cloneBoards();
-    const randomStart = randomNumber();
-    let possibleMove: BoardMove | undefined;
-    let position = randomStart;
-    while (true) {
-      let boardIndex = this.boardIndexFromPosition(position);
-      let x = this.xFromPosition(position);
-      let y = this.yFromPosition(position);
-      if (boards[boardIndex].isMovePossible(x, y)) {
-        possibleMove = {boardIndex, x, y};
-        boards[boardIndex].markAtPos(x, y);
-        if (P_POSITIONS.includes(this.totalBoardValue(boards))) {
-          return possibleMove;
-        }
-        boards[boardIndex].clearAtPos(x, y);
-      }
-      position = (position + 1) % (this.numberOfBoards * this.boardSize());
-      if (randomStart === position) {
-        break;
-      }
-    }
-    if (!possibleMove) {
-      throw new Error('Could not find any possible move');
-    }
-    return possibleMove;
-  }
+export function createEmptyBoard(): Board[] {
+  return Array(NO_OF_BOARDS)
+    .fill(0)
+    .map(() => new Board());
 }
 
-export default Game;
+export function makeMove(move: BoardMove, boards: Board[]) {
+  const boardsClone = boards.map(board => board.clone());
+  const {boardIndex, x, y} = move;
+  boardsClone[boardIndex].markAtPos(x, y);
+  return boardsClone;
+}
+
+export function cloneBoards(boards: Board[]) {
+  return boards.map(board => board.clone());
+}
+
+export function totalBoardValue(boards: Board[]) {
+  const val = boards.reduce((v, board) => v * board.boardValue(), 1);
+  return applyTransformations(val);
+}
+
+export function boardSize() {
+  return BOARD_COL_SIZE * BOARD_ROW_SIZE;
+}
+
+export function boardIndexFromPosition(pos: number): number {
+  return Math.floor(pos / boardSize());
+}
+
+export function xFromPosition(pos: number): number {
+  return pos % BOARD_ROW_SIZE;
+}
+
+export function yFromPosition(pos: number): number {
+  return Math.floor(pos / BOARD_COL_SIZE) % BOARD_COL_SIZE;
+}
+
+export function findNextMove(boards: Board[]): BoardMove {
+  const newBoards = cloneBoards(boards);
+  const randomStart = randomNumber();
+  let possibleMove: BoardMove | undefined;
+  let position = randomStart;
+  while (true) {
+    let boardIndex = boardIndexFromPosition(position);
+    let x = xFromPosition(position);
+    let y = yFromPosition(position);
+    if (newBoards[boardIndex].isMovePossible(x, y)) {
+      possibleMove = {boardIndex, x, y};
+      newBoards[boardIndex].markAtPos(x, y);
+      if (P_POSITIONS.includes(totalBoardValue(newBoards))) {
+        return possibleMove;
+      }
+      newBoards[boardIndex].clearAtPos(x, y);
+    }
+    position = (position + 1) % (NO_OF_BOARDS * boardSize());
+    if (randomStart === position) {
+      break;
+    }
+  }
+  if (!possibleMove) {
+    throw new Error('Could not find any possible move');
+  }
+  return possibleMove;
+}
