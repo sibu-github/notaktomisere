@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -16,7 +16,19 @@ const PLAYER_1_COLOR = '#d60505';
 const PLAYER_2_COLOR = '#008afc';
 const LAST_MOVE_COLOR = '#f4dbb1';
 
+const RULES = [
+  '1. Notakto Misere Mode is an alternate version of Tic-Tac-Toe game.',
+  '2. Game starts with 3 boards. A player can choose to make a move in any of the 3 boards.',
+  "3. In this game both players enter same symbol that is both players enter 'X'.",
+  "4. If a board contains 3'X' in a line then that board is dead and no longer available to make any more moves. The game continues on other available boards.",
+  '5. The game ends when all 3 boards are dead.',
+  "6. The player who makes 3'X' in a line in the last board looses the game.",
+  '7. In a Tic-Tac-Toe game most of the time a game ends in a draw. But in this alternate version there will always be a winner.',
+  "8. As a player your stategy should be to force your opponent to make 3'X' in a line in the last board.",
+];
+
 function App() {
+  const [showRules, setShowRules] = useState(true);
   const [currentPlayer, setCurrentPlayer] = useState<CurrentPlayer>(
     CurrentPlayer.One,
   );
@@ -28,6 +40,7 @@ function App() {
   const [boards, setBoard] = useState<Board[]>([]);
 
   const newGame = () => {
+    setShowRules(false);
     setCurrentPlayer(CurrentPlayer.One);
     setWinner(undefined);
     setLastMove(undefined);
@@ -36,8 +49,6 @@ function App() {
     setIsFinished(false);
     setBoard(createEmptyBoard());
   };
-
-  useEffect(() => newGame(), []);
 
   const getNextPlayer = (player: CurrentPlayer) =>
     player === CurrentPlayer.One ? CurrentPlayer.Two : CurrentPlayer.One;
@@ -90,30 +101,46 @@ function App() {
       <StatusBar animated={true} backgroundColor="#a33939" />
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <Text style={styles.title}>Notakto Misere Mode</Text>
-        <ShowPlayer />
-        <View>
-          {boards.map((board, idx) => (
-            <BoardView
-              key={idx}
-              boardIndex={idx}
-              board={board}
-              lastMove={lastMove}
+        {showRules ? (
+          <View style={styles.rulesWrapper}>
+            <Text style={styles.rulesHeader}>RULES</Text>
+            {RULES.map((txt, idx) => (
+              <Text key={idx} style={styles.rulesTxt}>
+                {txt}
+              </Text>
+            ))}
+            <Pressable style={styles.letsStartBtn} onPress={newGame}>
+              <Text style={styles.letsStartBtnTxt}>Let's start</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <>
+            <ShowPlayer />
+            <View>
+              {boards.map((board, idx) => (
+                <BoardView
+                  key={idx}
+                  boardIndex={idx}
+                  board={board}
+                  lastMove={lastMove}
+                  player1Moves={player1Moves}
+                  player2Moves={player2Moves}
+                  onPress={onPressCell}
+                />
+              ))}
+            </View>
+            <ShowWinner
+              isFinished={isFinished}
+              winner={winner}
+              playAgain={newGame}
+            />
+            <ShowMoves
+              showMoves={isFinished}
               player1Moves={player1Moves}
               player2Moves={player2Moves}
-              onPress={onPressCell}
             />
-          ))}
-        </View>
-        <ShowWinner
-          isFinished={isFinished}
-          winner={winner}
-          playAgain={newGame}
-        />
-        <ShowMoves
-          showMoves={isFinished}
-          player1Moves={player1Moves}
-          player2Moves={player2Moves}
-        />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -239,7 +266,7 @@ function ShowMoves(props: ShowMovesProps) {
           <Text style={styles.moveTxt}>Player 1</Text>
           {props.player1Moves.map((m, i) => (
             <Text key={i} style={styles.moveTxt}>
-              {m.boardIndex} {m.y} {m.x}
+              Board: {m.boardIndex + 1} Row: {m.y + 1} Col: {m.x + 1}
             </Text>
           ))}
         </View>
@@ -247,7 +274,7 @@ function ShowMoves(props: ShowMovesProps) {
           <Text style={styles.moveTxt}>Player 2</Text>
           {props.player2Moves.map((m, i) => (
             <Text key={i} style={styles.moveTxt}>
-              {m.boardIndex} {m.y} {m.x}
+              Board: {m.boardIndex + 1} Row: {m.y + 1} Col: {m.x + 1}
             </Text>
           ))}
         </View>
@@ -280,6 +307,36 @@ const styles = StyleSheet.create({
     fontSize: 24,
     height: 60,
     lineHeight: 60,
+  },
+  rulesWrapper: {
+    paddingTop: 10,
+    paddingHorizontal: 20,
+  },
+  rulesHeader: {
+    fontSize: 24,
+    color: '#000000',
+    fontWeight: '700',
+    alignSelf: 'center',
+  },
+  rulesTxt: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '600',
+    marginVertical: 5,
+    fontStyle: 'italic',
+  },
+  letsStartBtn: {
+    width: 120,
+    height: 50,
+    backgroundColor: '#c14549',
+    borderRadius: 10,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  letsStartBtnTxt: {
+    color: '#ffffff',
+    fontSize: 20,
   },
   showPlayerWrapper: {
     flexDirection: 'row',
@@ -358,6 +415,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ffffff',
     borderBottomWidth: 1,
     textAlign: 'center',
+  },
+  knowMoreTxt: {
+    color: '#000000',
+    marginTop: 30,
+    fontStyle: 'italic',
   },
 });
 
