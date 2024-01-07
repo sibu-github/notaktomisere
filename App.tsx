@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -11,6 +11,38 @@ import {
 import Board from './lib/game/board';
 import {createEmptyBoard, findNextMove, makeMove} from './lib/game/game';
 import {BoardMove, CurrentPlayer} from './lib/game/definitions';
+import Sound from 'react-native-sound';
+
+Sound.setCategory('Playback');
+
+const Pop = new Sound('pop.mp3', Sound.MAIN_BUNDLE, err => {
+  if (err) {
+    console.log('Failed to load sound Pop', err);
+  }
+});
+
+const SwitchOff = new Sound('switchoff.mp3', Sound.MAIN_BUNDLE, err => {
+  if (err) {
+    console.log('Failed to load sound SwitchOff', err);
+  }
+});
+
+const Fanfare = new Sound('fanfare.mp3', Sound.MAIN_BUNDLE, err => {
+  if (err) {
+    console.log('Failed to load sound Fanfare', err);
+  }
+});
+
+const Gameover = new Sound('gameover.mp3', Sound.MAIN_BUNDLE, err => {
+  if (err) {
+    console.log('Failed to load sound Gameover', err);
+  }
+});
+
+Pop.setVolume(1);
+SwitchOff.setVolume(1);
+Fanfare.setVolume(1);
+Gameover.setVolume(1);
 
 const PLAYER_1_COLOR = '#d60505';
 const PLAYER_2_COLOR = '#008afc';
@@ -50,6 +82,30 @@ function App() {
     setBoard(createEmptyBoard());
   };
 
+  useEffect(() => {
+    if (!isFinished) {
+      return;
+    }
+    if (winner && winner === CurrentPlayer.One) {
+      Fanfare.play(success => {
+        if (success) {
+          console.log('successfully played fanfare');
+        } else {
+          console.log('failed to play fanfare');
+        }
+      });
+    }
+    if (winner && winner === CurrentPlayer.Two) {
+      Gameover.play(success => {
+        if (success) {
+          console.log('successfully played Gameover');
+        } else {
+          console.log('failed to play Gameover');
+        }
+      });
+    }
+  }, [isFinished, winner]);
+
   const getNextPlayer = (player: CurrentPlayer) =>
     player === CurrentPlayer.One ? CurrentPlayer.Two : CurrentPlayer.One;
 
@@ -57,6 +113,7 @@ function App() {
     if (newBoards.every(board => board.isDead())) {
       setIsFinished(true);
       setWinner(getNextPlayer(player));
+
       return true;
     }
 
@@ -67,32 +124,47 @@ function App() {
     const {boardIndex, x, y} = move;
     setLastMove({boardIndex, x, y});
     if (player === CurrentPlayer.One) {
-      const moves = [...player1Moves, {boardIndex, x, y}];
-      setPlayer1Moves(moves);
+      setPlayer1Moves(prev => [...prev, {boardIndex, x, y}]);
       return;
     }
-    const moves = [...player2Moves, {boardIndex, x, y}];
-    setPlayer2Moves(moves);
+    setPlayer2Moves(prev => [...prev, {boardIndex, x, y}]);
+  };
+
+  const computerMove = async (newBoards: Board[]) => {
+    const botMove = findNextMove(newBoards);
+    await new Promise(resolve => setTimeout(() => resolve(true), 200));
+    SwitchOff.play(success => {
+      if (success) {
+        console.log('SwitchOff sound played successfully');
+      } else {
+        console.log('SwitchOff Failed to play sound');
+      }
+    });
+    insertPlayerMoves(botMove, CurrentPlayer.Two);
+    const boardsAfterMove = makeMove(botMove, newBoards);
+    setBoard(boardsAfterMove);
+    calculateWinner(boardsAfterMove, CurrentPlayer.Two);
+    setCurrentPlayer(getNextPlayer(CurrentPlayer.Two));
   };
 
   const onPressCell = (move: BoardMove) => {
     if (isFinished || currentPlayer !== CurrentPlayer.One) {
       return;
     }
+    Pop.play(success => {
+      if (success) {
+        console.log('Pop sound played successfully');
+      } else {
+        console.log('Pop Failed to play sound');
+      }
+    });
     insertPlayerMoves(move, CurrentPlayer.One);
     const newBoards = makeMove(move, boards);
     setBoard(newBoards);
     const finished = calculateWinner(newBoards, CurrentPlayer.One);
     setCurrentPlayer(getNextPlayer(CurrentPlayer.One));
     if (!finished) {
-      const botMove = findNextMove(newBoards);
-      setTimeout(() => {
-        insertPlayerMoves(botMove, CurrentPlayer.Two);
-        const boardsAfterMove = makeMove(botMove, newBoards);
-        setBoard(boardsAfterMove);
-        calculateWinner(newBoards, CurrentPlayer.Two);
-        setCurrentPlayer(getNextPlayer(CurrentPlayer.Two));
-      }, 100);
+      computerMove(newBoards);
     }
   };
 

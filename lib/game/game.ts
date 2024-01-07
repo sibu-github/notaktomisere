@@ -49,17 +49,32 @@ export function yFromPosition(pos: number): number {
 export function findNextMove(boards: Board[]): BoardMove {
   const newBoards = cloneBoards(boards);
   const randomStart = randomNumber();
-  let possibleMove: BoardMove | undefined;
+  let nonDeadBoardPPositionMove: BoardMove | undefined;
+  let deadBoardPPositionMove: BoardMove | undefined;
+  let nonDeadBoardMove: BoardMove | undefined;
+  let deadBoardMove: BoardMove | undefined;
   let position = randomStart;
   while (true) {
     let boardIndex = boardIndexFromPosition(position);
     let x = xFromPosition(position);
     let y = yFromPosition(position);
     if (newBoards[boardIndex].isMovePossible(x, y)) {
-      possibleMove = {boardIndex, x, y};
       newBoards[boardIndex].markAtPos(x, y);
-      if (P_POSITIONS.includes(totalBoardValue(newBoards))) {
-        return possibleMove;
+      const isDead = newBoards[boardIndex].isDead();
+      const isPPosition = P_POSITIONS.includes(totalBoardValue(newBoards));
+      if (isPPosition) {
+        if (isDead) {
+          deadBoardPPositionMove = {boardIndex, x, y};
+        } else {
+          nonDeadBoardPPositionMove = {boardIndex, x, y};
+          break;
+        }
+      } else {
+        if (isDead) {
+          deadBoardMove = {boardIndex, x, y};
+        } else {
+          nonDeadBoardMove = {boardIndex, x, y};
+        }
       }
       newBoards[boardIndex].clearAtPos(x, y);
     }
@@ -68,8 +83,19 @@ export function findNextMove(boards: Board[]): BoardMove {
       break;
     }
   }
-  if (!possibleMove) {
-    throw new Error('Could not find any possible move');
+
+  if (nonDeadBoardPPositionMove) {
+    return nonDeadBoardPPositionMove;
   }
-  return possibleMove;
+  if (deadBoardPPositionMove) {
+    return deadBoardPPositionMove;
+  }
+  if (nonDeadBoardMove) {
+    return nonDeadBoardMove;
+  }
+  if (deadBoardMove) {
+    return deadBoardMove;
+  }
+
+  throw new Error('Could not find any possible move');
 }
